@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>星引擎派对随机开局选择器</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .card {
+        margin-bottom: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      .character-card {
+        width: 120px;
+        margin: 10px;
+        text-align: center;
+        display: inline-block;
+      }
+      .character-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin: 0 auto 10px;
+        display: block;
+        border: 3px solid #ddd;
+      }
+      .color-0 {
+        border-color: #ff6b6b !important;
+      }
+      .color-1 {
+        border-color: #ffd166 !important;
+      }
+      .color-2 {
+        border-color: #45b7d1 !important;
+      }
+      .color-3 {
+        border-color: #06d6a0 !important;
+      }
+      .color-4 {
+        border-color: #000000 !important;
+      }
+      .color-5 {
+        border-color: #cccccc !important;
+      }
+      .header {
+        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        color: white;
+        padding: 30px 0;
+        margin-bottom: 30px;
+      }
+      .section-title {
+        border-left: 5px solid #2575fc;
+        padding-left: 15px;
+        margin-bottom: 20px;
+      }
+      .btn-primary {
+        background: linear-gradient(to right, #6a11cb, #2575fc);
+        border: none;
+        padding: 10px 30px;
+        font-size: 1.1rem;
+      }
+      .config-textarea {
+        min-height: 120px;
+        font-family: monospace;
+      }
+      .tag-badge {
+        font-size: 0.7rem;
+        margin: 1px;
+      }
+      .character-tags {
+        margin-top: 5px;
+        min-height: 20px;
+      }
+      #configImage {
+        width: 100%;
+        height: auto;
+        display: block;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      #canvasContainer {
+        position: relative;
+      }
+      #configCanvas {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 网页1: 选择页面 -->
+    <div id="page1">
+      <div class="header">
+        <div class="container">
+          <h1 class="display-4">星引擎派对随机开局选择器</h1>
+          <p class="lead">给自己的星趴上上压力</p>
+        </div>
+      </div>
+
+      <div class="container">
+        <form id="selectionForm">
+          <div class="row">
+            <!-- 地图选择 -->
+            <div class="col-md-4">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title section-title">选择地图</h5>
+                  <div id="mapSelection" class="form-check">
+                    <!-- 地图选项将通过JavaScript动态生成 -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 难度选择 -->
+            <div class="col-md-4">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title section-title">选择难度</h5>
+                  <div id="difficultySelection" class="form-check">
+                    <!-- 难度选项将通过JavaScript动态生成 -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 禁止颜色选择 -->
+            <div class="col-md-4">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title section-title">禁止颜色数量</h5>
+                  <div id="colorSelection" class="form-check">
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="colorCount"
+                        id="color0"
+                        value="0"
+                      />
+                      <label class="form-check-label" for="color0">0</label>
+                    </div>
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="colorCount"
+                        id="color1"
+                        value="1"
+                      />
+                      <label class="form-check-label" for="color1">1</label>
+                    </div>
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="colorCount"
+                        id="color2"
+                        value="2"
+                        checked
+                      />
+                      <label class="form-check-label" for="color2">2</label>
+                    </div>
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="colorCount"
+                        id="color3"
+                        value="3"
+                      />
+                      <label class="form-check-label" for="color3">3</label>
+                    </div>
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="colorCount"
+                        id="color4"
+                        value="4"
+                      />
+                      <label class="form-check-label" for="color4">4</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 新添加的禁止标签面板 -->
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-body">
+                  <div
+                    class="d-flex justify-content-between align-items-center mb-3"
+                  >
+                    <h5 class="card-title section-title mb-0">禁止标签</h5>
+                    <button
+                      type="button"
+                      id="invertTagsBtn"
+                      class="btn btn-sm btn-outline-secondary"
+                    >
+                      反选
+                    </button>
+                  </div>
+
+                  <!-- 禁止标签数量选择 -->
+                  <div class="mb-3">
+                    <label class="form-label">禁止标签数量 (0-4):</label>
+                    <div class="form-check form-check-inline">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="tagCount"
+                        id="tagCount0"
+                        value="0"
+                        checked
+                      />
+                      <label class="form-check-label" for="tagCount0">0</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="tagCount"
+                        id="tagCount1"
+                        value="1"
+                      />
+                      <label class="form-check-label" for="tagCount1">1</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="tagCount"
+                        id="tagCount2"
+                        value="2"
+                      />
+                      <label class="form-check-label" for="tagCount2">2</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="tagCount"
+                        id="tagCount3"
+                        value="3"
+                      />
+                      <label class="form-check-label" for="tagCount3">3</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="tagCount"
+                        id="tagCount4"
+                        value="4"
+                      />
+                      <label class="form-check-label" for="tagCount4">4</label>
+                    </div>
+                  </div>
+
+                  <!-- 标签选择区域 -->
+                  <div id="tagSelection" class="d-flex flex-wrap">
+                    <!-- 标签选项将通过JavaScript动态生成 -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-4">
+            <div class="col-12 text-center">
+              <button
+                type="button"
+                id="submitBtn"
+                class="btn btn-primary btn-lg"
+              >
+                开始游戏
+              </button>
+              <button
+                type="button"
+                id="clearStorageBtn"
+                class="btn btn-outline-secondary btn-lg ms-2"
+              >
+                清除保存的设置
+              </button>
+            </div>
+          </div>
+        </form>
+        <br />
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title section-title">全部角色</h5>
+                <div
+                  id="allCharacters"
+                  class="d-flex flex-wrap justify-content-center"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 网页2: 结果页面 -->
+    <div id="page2" style="display: none">
+      <div class="header">
+        <div class="container">
+          <h1 class="display-4">游戏配置结果</h1>
+          <p class="lead">您的游戏设置已生成，请查看角色分配</p>
+        </div>
+      </div>
+
+      <div class="container">
+        <div class="row mb-4">
+          <div class="col-md-3">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title section-title">地图信息</h5>
+                <p id="mapResult" class="fs-5"></p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title section-title">难度信息</h5>
+                <p id="difficultyResult" class="fs-5"></p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title section-title">禁用颜色</h5>
+                <p id="colorResult" class="fs-5"></p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title section-title">禁用标签</h5>
+                <p id="tagResult" class="fs-5"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-4">
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title section-title">可用角色</h5>
+                <div
+                  id="availableCharacters"
+                  class="d-flex flex-wrap justify-content-center"
+                >
+                  <!-- 可用角色将通过JavaScript动态生成 -->
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title section-title">禁止角色</h5>
+                <div
+                  id="bannedCharacters"
+                  class="d-flex flex-wrap justify-content-center"
+                >
+                  <!-- 禁止角色将通过JavaScript动态生成 -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-4">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title section-title">配置信息</h5>
+
+                <div class="mb-3">
+                  <form onsubmit="return false">
+                    <label class="form-label">图片样式</label>
+                    <div class="form-check form-check-inline">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        onclick="setStyle(event)"
+                        id="styleFull"
+                        value="full"
+                        name="img_style"
+                      />
+                      <label class="form-check-label" for="styleFull"
+                        >全部</label
+                      >
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        onclick="setStyle(event)"
+                        id="styleBannedOnly"
+                        value="banned_only"
+                        name="img_style"
+                      />
+                      <label class="form-check-label" for="styleBannedOnly"
+                        >显示禁用</label
+                      >
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        onclick="setStyle(event)"
+                        id="styleAvailableOnly"
+                        value="available_only"
+                        name="img_style"
+                      />
+                      <label class="form-check-label" for="styleAvailableOnly"
+                        >显示可用</label
+                      >
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        onclick="setStyle(event)"
+                        id="styleNone"
+                        value="none"
+                        name="img_style"
+                      />
+                      <label class="form-check-label" for="styleNone"
+                        >隐藏角色</label
+                      >
+                    </div>
+                  </form>
+                </div>
+                <div id="canvasContainer">
+                  <canvas id="configCanvas"></canvas>
+                  <img id="configImage" alt="配置信息图片" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-4">
+          <div class="col-12 text-center">
+            <button type="button" id="backBtn" class="btn btn-secondary">
+              返回重新选择
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="scripts/data_loader.js"></script>
+    <script src="scripts/color.js"></script>
+    <script src="scripts/image.js"></script>
+    <script src="scripts/plan.js"></script>
+    <script src="scripts/setting.js"></script>
+    <script src="scripts/page.js"></script>
+    <script src="scripts/generator.js"></script>
+    <script src="scripts/reg.js"></script>
+  </body>
+</html>
