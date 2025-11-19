@@ -22,5 +22,5 @@ function loadPlanFromHash() {
  * @param {Types.Char} char 
  */
 function isCharBanned(char) {
-    return plan.bannedColors.find(color => char.color == color) || plan.bannedTags.map(tagId => tags[tagId]).find(tag => char.related.find(t => t == tag));
+    return plan.bannedColors.find(color => char.color == color) !== undefined || plan.bannedTags.map(tagId => tags[tagId]).find(tag => char.related.find(t => t == tag)) !== undefined;
 }
