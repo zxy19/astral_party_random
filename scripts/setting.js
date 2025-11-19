@@ -16,14 +16,7 @@ function saveSettings() {
         colorCount: document.querySelector('input[name="colorCount"]:checked')
             .value,
 
-        // 保存禁止标签数量
-        tagCount: document.querySelector('input[name="tagCount"]:checked')
-            .value,
-
-        // 保存标签选择
-        tags: Array.from(
-            document.querySelectorAll("#tagSelection input:checked")
-        ).map((input) => input.value),
+        tagGrps: saveTagSettings(),
         // 添加其他设置项
         style,
     };
@@ -57,22 +50,17 @@ function restoreSettings() {
             if (colorCountInput) colorCountInput.checked = true;
         }
 
-        // 恢复禁止标签数量
-        if (settings.tagCount) {
-            const tagCountInput = document.querySelector(
-                `input[name="tagCount"][value="${settings.tagCount}"]`
-            );
-            if (tagCountInput) tagCountInput.checked = true;
+
+        if (settings.tagGrps) {
+            restoreTagSettings(settings.tagGrps);
         }
 
-        // 恢复标签选择
-        document.querySelectorAll("#tagSelection input").forEach((input) => {
-            input.checked = settings.tags.includes(input.value);
-        });
         style = settings.style || STYLE_BANNED_ONLY;
         const iss = document.querySelector(
             `input[name="img_style"][value="${settings.style}"]`
         );
         if (iss) iss.checked = true;
+    } else {
+        generateNewPanel();
     }
 }

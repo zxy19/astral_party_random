@@ -2,18 +2,6 @@
 // 初始化页面
 document.addEventListener("DOMContentLoaded", function () {
     showAllCharacters();
-    // 反选标签按钮事件
-    document
-        .getElementById("invertTagsBtn")
-        .addEventListener("click", function () {
-            const tagCheckboxes = document.querySelectorAll(
-                '#tagSelection input[type="checkbox"]'
-            );
-            tagCheckboxes.forEach((checkbox) => {
-                checkbox.checked = !checkbox.checked;
-            });
-            saveSettings(); // 保存设置
-        });
 
     // 表单变化时保存设置
     document
@@ -28,6 +16,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 localStorage.removeItem(STORAGE_KEY);
                 location.reload();
             }
+        });
+    document
+        .getElementById("addTagGroup")
+        .addEventListener("click", function () {
+            generateNewPanel();
         });
 
     // 提交按钮点击事件

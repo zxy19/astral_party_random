@@ -28,20 +28,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-    // 生成标签选择选项
-    const tagSelection = document.getElementById("tagSelection");
-    if (tags && Array.isArray(tags)) {
-        tags.forEach((tag, index) => {
-            const div = document.createElement("div");
-            div.className = "form-check me-3 mb-2";
-            div.innerHTML = `
-            <input class="form-check-input" type="checkbox" id="tag${index}" value="${index}" checked>
-            <label class="form-check-label" for="tag${index}">${tag}</label>
-        `;
-            tagSelection.appendChild(div);
-        });
-    }
-
     // 从localStorage恢复设置
     restoreSettings();
     
