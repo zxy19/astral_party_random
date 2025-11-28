@@ -22,6 +22,11 @@ document.addEventListener("DOMContentLoaded", function () {
         .addEventListener("click", function () {
             generateNewPanel();
         });
+    document
+        .getElementById("addCharGroup")
+        .addEventListener("click", function () {
+            generateNewBanCharPanel();
+        });
 
     // 提交按钮点击事件
     document

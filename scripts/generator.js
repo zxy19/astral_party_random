@@ -51,10 +51,11 @@ function generatePlan() {
     }
 
     const bannedTagIndexes = selectForAllTags();
+    const bannedCharIndexes = selectForAllChars();
 
     // 生成URL并跳转
     const hash = `${randomMap}|${randomDifficulty}|${bannedColors.join(
         ","
-    )}|${bannedTagIndexes.join(",")}`;
+    )}|${bannedTagIndexes.join(",")}|${bannedCharIndexes.join(",")}`;
     return hash;
 }

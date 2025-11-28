@@ -88,6 +88,19 @@
       #configCanvas {
         display: none;
       }
+      .char-icon {
+        border-radius: 20px;
+        height: 20px;
+        width: auto;
+      }
+      .char-selection {
+        border-style: solid;
+        border-radius: 20px;
+        padding: 0 10px 0 30px;
+      }
+      .char-selection-container{
+        padding-left: 10px;
+      }
     </style>
   </head>
   <body>
@@ -191,8 +204,7 @@
           </div>
 
           <!-- 新添加的禁止标签面板 -->
-          <div class="row" id="banTag">
-          </div>
+          <div class="row" id="banTag"></div>
 
           <div class="row mt-4">
             <div class="col-12 text-center">
@@ -203,14 +215,21 @@
               >
                 开始游戏
               </button>
+            </div>
+            <div class="col-12 text-center pt-4">
               <button
                 type="button"
                 id="clearStorageBtn"
-                class="btn btn-outline-secondary btn-lg ms-2"
+                class="btn btn-outline-secondary btn-lg ms-2 btn-sm"
               >
                 清除保存的设置
               </button>
-              <button type="button" class="btn btn-primary" id="addTagGroup">添加禁止标签组</button>
+              <button type="button" class="btn btn-outline-info btn-sm" id="addTagGroup">
+                添加禁止标签组
+              </button>
+              <button type="button" class="btn btn-outline-info btn-sm" id="addCharGroup">
+                添加禁止角色组
+              </button>
             </div>
           </div>
         </form>
@@ -397,5 +416,6 @@
     <script src="scripts/tag.js?v=00001"></script>
     <script src="scripts/generator.js?v=00001"></script>
     <script src="scripts/reg.js?v=00001"></script>
+    <script src="scripts/ban_char.js?v=00001"></script>
   </body>
 </html>

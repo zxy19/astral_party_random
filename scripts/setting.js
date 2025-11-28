@@ -17,6 +17,7 @@ function saveSettings() {
             .value,
 
         tagGrps: saveTagSettings(),
+        charGrps: saveCharSettings(),
         // 添加其他设置项
         style,
     };
@@ -53,6 +54,10 @@ function restoreSettings() {
 
         if (settings.tagGrps) {
             restoreTagSettings(settings.tagGrps);
+        }
+
+        if (settings.charGrps) {
+            restoreCharSettings(settings.charGrps);
         }
 
         style = settings.style || STYLE_BANNED_ONLY;
