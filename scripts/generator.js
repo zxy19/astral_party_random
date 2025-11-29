@@ -56,6 +56,6 @@ function generatePlan() {
     // 生成URL并跳转
     const hash = `${randomMap}|${randomDifficulty}|${bannedColors.join(
         ","
-    )}|${bannedTagIndexes.join(",")}|${bannedCharIndexes.join(",")}`;
+    )}|${bannedTagIndexes[0].join(",")}|${bannedTagIndexes[1].join(",")}|${bannedCharIndexes.join(",")}`;
     return hash;
 }

@@ -1,5 +1,5 @@
 var currentCharGrpId = 0;
-function generateNewBanCharPanel() {
+function generateNewBanCharPanel(no_save) {
     const id = currentCharGrpId++;
     setTimeout(() => {
         // 反选标签按钮事件
@@ -42,7 +42,7 @@ ${charDesc.name}</label>
                 charSelection.appendChild(div);
             });
         }
-        saveSettings();
+        if(!no_save)saveSettings();
     }, 1);
     const charContainer = document.getElementById("banTag");
     const charPanel = document.createElement("div");
@@ -138,7 +138,7 @@ function restoreCharSettings(setting) {
     const currentPanels = document.querySelectorAll(".charPanel");
     if (currentPanels.length < setting.length) {
         for (let i = currentPanels.length; i < setting.length; i++) {
-            generateNewBanCharPanel();
+            generateNewBanCharPanel(true);
         }
         setTimeout(() => restoreCharSettings(setting), 1);
     } else if (currentPanels.length > setting.length) {

@@ -8,13 +8,22 @@ function showPage2() {
     reRenderPage2();
 }
 function reRenderPage2() {
-    const bannedTags = plan.bannedTags.map((index) => tags[index]);
-
-    // 显示地图和难度信息
     document.getElementById("mapResult").textContent = aLabel[plan.map];
     document.getElementById("difficultyResult").textContent = bLabel[plan.difficulty];
     document.getElementById("colorResult").textContent = plan.bannedColors.length > 0 ? plan.bannedColors.map((t) => color[t]).join(", ") : "无";
-    document.getElementById("tagResult").textContent = plan.bannedTags.length > 0 ? bannedTags.join(", ") : "无";
+
+    let tagResult = "";
+    if (plan.bannedTags.length > 0) {
+        tagResult = plan.bannedTags.map((tag) => `<span class="badge tag-badge bg-danger">${tags[tag]}</span>`).join("");
+    }
+    if (plan.requiredTags.length > 0) {
+        tagResult += plan.requiredTags.map((tag) => `<span class="badge tag-badge bg-success">${tags[tag]}</span>`).join("");
+    }
+    if (tagResult == "") {
+        tagResult = "<span class='badge tag-badge bg-secondary'>无</span>";
+    }
+
+    document.getElementById("tagResult").innerHTML = tagResult;
 
     displayCharacters();
 
@@ -50,8 +59,22 @@ function displayCharacters() {
         let tagBadges = "";
         if (char.related && char.related.length > 0) {
             tagBadges = char.related
-                .map((tag) => `<span class="badge tag-badge bg-secondary">${tag}</span>`)
+                .map((tag) => {
+                    let specialClass = "";
+                    if (plan.requiredTags.find(t => tag == tags[t]) !== undefined) {
+                        specialClass = "success";
+                    }
+                    if (plan.bannedTags.find(t => tag == tags[t]) !== undefined) {
+                        specialClass = "danger";
+                    }
+                    if (specialClass != "")
+                        return `<span class="badge tag-badge bg-${specialClass}">${tag}</span>`
+                    return ""
+                })
                 .join("");
+        }
+        if (plan.bannedColors.find(color => char.color == color) !== undefined) {
+            tagBadges = `<span class="badge tag-badge bg-danger">${color[char.color]}</span>` + tagBadges;
         }
 
         card.innerHTML = `

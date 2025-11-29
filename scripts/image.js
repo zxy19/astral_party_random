@@ -9,7 +9,6 @@ function updateConfigImage() {
     const mapId = plan.map;
     const difficultyId = plan.difficulty;
     const bannedColors = plan.bannedColors;
-    const bannedTags = plan.bannedTags.map(t => tags[t]);
     let showAvailable =
         style === STYLE_AVAILABLE_ONLY || style === STYLE_FULL;
     let showBanned = style === STYLE_BANNED_ONLY || style === STYLE_FULL;
@@ -110,8 +109,13 @@ function updateConfigImage() {
         yPos
     );
     yPos += 35 * scaleFactor;
+    let tagResult = "";
+    if(plan.bannedTags.length > 0)
+        tagResult +="禁【"+ plan.bannedTags.map((tag) => tags[tag]).join(", ")+"】";
+    if(plan.requiredTags.length > 0)
+        tagResult +="要【"+ plan.requiredTags.map((tag) => tags[tag]).join(", ")+"】";
     ctx.fillText(
-        `禁止标签: ${bannedTags.length > 0 ? bannedTags.join(", ") : "无"}`,
+        `标签: ${tagResult || "无"}`,
         padding,
         yPos
     );

@@ -1,7 +1,15 @@
 var currentTagGrpId = 0;
-function generateNewPanel() {
+function generateNewPanel(no_save) {
     const id = currentTagGrpId++;
     setTimeout(() => {
+        // 切换标签模式按钮事件
+        document
+            .getElementById("switchTagMode-" + id)
+            .addEventListener("click", function () {
+                switchTagMode(id);
+                saveSettings();
+            });
+        
         // 反选标签按钮事件
         document
             .getElementById("invertTagsBtn-" + id)
@@ -34,7 +42,7 @@ function generateNewPanel() {
                 tagSelection.appendChild(div);
             });
         }
-        saveSettings();
+        if (!no_save) saveSettings();
     }, 1);
     const tagContainer = document.getElementById("banTag");
     const tagPanel = document.createElement("div");
@@ -47,7 +55,14 @@ function generateNewPanel() {
         <div
         class="d-flex justify-content-between align-items-center mb-3"
         >
-        <h5 class="card-title section-title mb-0">禁止标签#${id}</h5>
+        <h5 class="card-title section-title mb-0">
+            <button type="button"
+            id="switchTagMode-${id}"
+            class="btn btn-sm btn-outline-info">
+            切换
+            </button>
+            <span id="tagMode-${id}" data-whitemode="0">禁止</span>标签#${id}
+        </h5>
         <button
             type="button"
             id="invertTagsBtn-${id}"
@@ -64,9 +79,9 @@ function generateNewPanel() {
         </button>
         </div>
 
-        <!-- 禁止标签数量选择 -->
+        <!-- 标签数量选择 -->
         <div class="mb-3">
-        <label class="form-label">禁止标签数量 (0-4):</label>
+        <label class="form-label">选择标签数量 (0-4):</label>
         <div class="form-check form-check-inline">
             <input
             class="form-check-input"
@@ -129,24 +144,44 @@ function generateNewPanel() {
     tagContainer.appendChild(tagPanel);
 }
 
+function switchTagMode(id) {
+    const modeElement = document.getElementById("tagMode-" + id);
+    const isWhiteMode = modeElement.getAttribute("data-whitemode") === "1";
+    
+    if (isWhiteMode) {
+        // 从白名单模式切换到黑名单模式
+        modeElement.setAttribute("data-whitemode", "0");
+        modeElement.textContent = "禁止";
+    } else {
+        // 从黑名单模式切换到白名单模式
+        modeElement.setAttribute("data-whitemode", "1");
+        modeElement.textContent = "允许";
+    }
+}
+
 function selectForAllTags() {
-    const tagsSelected = {};
+    const banTagsSelected = {}, requiredTagsSelected = {};
     const panels = document.querySelectorAll(".tagPanel");
     panels.forEach((panel) => {
         const id = panel.getAttribute("data-tag-id");
+        const modeElement = document.getElementById(`tagMode-${id}`);
+        const isWhiteMode = modeElement.getAttribute("data-whitemode") === "1";
         const count = panel.querySelector(`input[name="tagCount-${id}"]:checked`).value;
         const tagCheckboxes = panel.querySelectorAll(`input[type="checkbox"]:checked`);
         let allTags = Array.from(tagCheckboxes).map((checkbox) => checkbox.value);
         const toPick = Math.min(count, allTags.length);
-
         for (let i = 0; i < toPick; i++) {
             const pickedId = Math.floor(Math.random() * allTags.length);
             const picked = allTags[pickedId];
-            tagsSelected[picked] = true;
+            if (isWhiteMode) {
+                requiredTagsSelected[picked] = true;
+            } else {
+                banTagsSelected[picked] = true;
+            }
             allTags.splice(pickedId, 1);
         }
     })
-    return Object.keys(tagsSelected);
+    return [Object.keys(banTagsSelected), Object.keys(requiredTagsSelected)];
 }
 
 function saveTagSettings() {
@@ -154,10 +189,12 @@ function saveTagSettings() {
     const panels = document.querySelectorAll(".tagPanel");
     panels.forEach((panel) => {
         const id = panel.getAttribute("data-tag-id");
+        const modeElement = document.getElementById(`tagMode-${id}`);
+        const isWhiteMode = modeElement.getAttribute("data-whitemode") === "1";
         const count = panel.querySelector(`input[name="tagCount-${id}"]:checked`).value;
         const tagCheckboxes = panel.querySelectorAll(`input[type="checkbox"]:checked`);
         const tags = Array.from(tagCheckboxes).map((checkbox) => checkbox.value);
-        tagSettings.push({ count, tags });
+        tagSettings.push({ count, tags, isWhiteMode });
     });
     return tagSettings;
 }
@@ -165,7 +202,7 @@ function restoreTagSettings(setting) {
     const currentPanels = document.querySelectorAll(".tagPanel");
     if (currentPanels.length < setting.length) {
         for (let i = currentPanels.length; i < setting.length; i++) {
-            generateNewPanel();
+            generateNewPanel(true);
         }
         setTimeout(() => restoreTagSettings(setting), 1);
     } else if (currentPanels.length > setting.length) {
@@ -180,6 +217,8 @@ function restoreTagSettings(setting) {
             const id = panel.getAttribute("data-tag-id");
             const count = setting[i].count;
             const tags = setting[i].tags;
+            document.getElementById(`tagMode-${id}`).setAttribute("data-whitemode", setting[i].isWhiteMode ? "1" : "0");
+            document.getElementById(`tagMode-${id}`).textContent = setting[i].isWhiteMode ? "允许" : "禁止";
             panel.querySelectorAll('input').forEach(i => i.checked = false);
             document.getElementById(`tagCount${count}-${id}`).checked = true;
             tags.forEach(tag => document.getElementById(`tag${tag}-${id}`).checked = true);
