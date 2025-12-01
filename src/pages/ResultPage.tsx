@@ -19,7 +19,7 @@ export class ResultPage implements ClassComponent {
     showBanned: "显示禁用角色",
     showDescription: "显示描述",
     large: "更大的角色",
-    slim: "更细的图片输出"
+    slim: "更窄的图片输出"
   }
   // 获取允许的角色列表
   private getAllowedCharacters(groupIndex: number) {

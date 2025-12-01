@@ -6,8 +6,6 @@
   box-shadow:unset!important;
 }
 
-.card-content {
-}
 .card-content-collapsible{
   max-height: 2500px;
   transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
