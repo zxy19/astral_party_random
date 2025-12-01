@@ -1,0 +1,27 @@
+{
+  "name": "mithril-website",
+  "version": "1.0.0",
+  "description": "A website built with Mithril.js",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node esbuild.config.js --watch",
+    "build": "node esbuild.config.js --prod",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "bootstrap": "^5.3.8",
+    "chokidar": "^5.0.0",
+    "js-base64": "^3.7.8",
+    "mithril": "^2.3.8",
+    "uuid": "^13.0.0"
+  },
+  "devDependencies": {
+    "@types/bootstrap": "^5.2.10",
+    "@types/mithril": "^2.2.7",
+    "@types/node": "^24.10.1",
+    "esbuild": "^0.19.12",
+    "esbuild-plugin-copy": "^2.1.1",
+    "esbuild-plugin-replace": "^1.4.0",
+    "typescript": "^5.9.3"
+  }
+}

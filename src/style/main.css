@@ -1,0 +1,140 @@
+.card {
+  margin-bottom: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.card-block-collapsed{
+  box-shadow:unset!important;
+}
+
+.card-content {
+  transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  overflow: hidden;
+  max-height: 1500px;
+}
+
+.card-collapsed {
+  max-height: 0;
+  opacity: 0;
+}
+
+.collapsible-card-title {
+  transition: margin-bottom 0.3s;
+  position: relative;
+  cursor: pointer;
+}
+
+.collapsible-card-title::after {
+  content: '';
+  display: block;
+  position: absolute;
+  right: calc(1rem - 2px);
+  top: 50%;
+  transform: translateY(-50%) rotate(-180deg);
+  width: 1rem;
+  height: 1rem;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23212529' stroke-linecap='round' stroke-linejoin='round'%3e%3cpath d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 1rem;
+  transition: transform 0.3s ease-in-out;
+}
+
+.collapsible-card-title.card-title-collapsed::after {
+  transform: translateY(-50%) rotate(0);
+}
+
+.collapsible-card-title.card-title-collapsed {
+  margin-bottom: -4px;
+}
+.character-card {
+  width: 120px;
+  margin: 10px;
+  text-align: center;
+  display: inline-block;
+}
+.character-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 auto 10px;
+  display: block;
+  border: 3px solid #ddd;
+}
+.color-0 {
+  border-color: #ff6b6b !important;
+}
+.color-1 {
+  border-color: #ffd166 !important;
+}
+.color-2 {
+  border-color: #45b7d1 !important;
+}
+.color-3 {
+  border-color: #06d6a0 !important;
+}
+.color-4 {
+  border-color: #000000 !important;
+}
+.color-5 {
+  border-color: #cccccc !important;
+}
+.header {
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  color: white;
+  padding: 30px 0;
+  margin-bottom: 30px;
+}
+.section-title {
+  border-left: 5px solid #2575fc;
+  padding-left: 15px;
+  margin-bottom: 20px;
+}
+.btn-primary {
+  background: linear-gradient(to right, #6a11cb, #2575fc);
+  border: none;
+  padding: 10px 30px;
+  font-size: 1.1rem;
+}
+.config-textarea {
+  min-height: 120px;
+  font-family: monospace;
+}
+.tag-badge {
+  font-size: 0.7rem;
+  margin: 1px;
+}
+.character-tags {
+  margin-top: 5px;
+  min-height: 20px;
+}
+#configImage {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+#canvasContainer {
+  position: relative;
+}
+#configCanvas {
+  display: none;
+}
+.char-icon {
+  border-radius: 20px;
+  height: 20px;
+  width: auto;
+}
+.char-selection {
+  border-style: solid;
+  border-radius: 20px;
+  padding: 0 10px 0 30px;
+}
+.char-selection-container {
+  padding-left: 10px;
+}
+.hr-right {
+  border-right: lightgray dashed 1px;
+  margin-right: -1px;
+}
