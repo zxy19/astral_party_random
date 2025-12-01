@@ -7,11 +7,12 @@
 }
 
 .card-content {
+}
+.card-content-collapsible{
+  max-height: 2500px;
   transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
   overflow: hidden;
-  max-height: 1500px;
 }
-
 .card-collapsed {
   max-height: 0;
   opacity: 0;

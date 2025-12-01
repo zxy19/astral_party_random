@@ -30,7 +30,7 @@ export class Card implements ClassComponent<CardAttrs> {
               {title}
             </h5>
           )}
-          <div className={this.isCollapsed ? "card-content card-collapsed" : "card-content"}>
+          <div className={(this.isCollapsed ? "card-content card-collapsed" : "card-content") + (showCollapseToggle?" card-content-collapsible":"")}>
             {children}
           </div>
         </div>
