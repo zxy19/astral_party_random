@@ -2,11 +2,11 @@
   margin-bottom: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
-.card-block-collapsed{
-  box-shadow:unset!important;
+.card-block-collapsed {
+  box-shadow: unset !important;
 }
 
-.card-content-collapsible{
+.card-content-collapsible {
   max-height: 2500px;
   transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
   overflow: hidden;
@@ -23,7 +23,7 @@
 }
 
 .collapsible-card-title::after {
-  content: '';
+  content: "";
   display: block;
   position: absolute;
   right: calc(1rem - 2px);
@@ -136,4 +136,14 @@
 .hr-right {
   border-right: lightgray dashed 1px;
   margin-right: -1px;
+}
+.char-name {
+  white-space: pre;
+}
+.color-indicator{
+  border-radius: 6px;
+}
+.color-indicator span{
+  height: 4px;
+  width: 100%;
 }

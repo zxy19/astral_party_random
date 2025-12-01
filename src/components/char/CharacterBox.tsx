@@ -14,9 +14,11 @@ export class CharacterBox implements ClassComponent<CharacterBoxAttrs> {
     view({ attrs }: Vnode<CharacterBoxAttrs>) {
         return (
             <div className='character-card'>
-                <img src={attrs.character.icon} alt={attrs.character.name} className={"character-icon color-" + colorData[attrs.character.color[0]].code} />
-                <h6>{attrs.character.name}</h6>
-                <small class="text-muted">颜色: {attrs.character.color.map(c => colorData[c].name).join("，")}</small>
+                <img src={attrs.character.icon} alt={attrs.character.name} className={"character-icon color-" + attrs.character.color[0]} />
+                <div className="char-name text-truncate">{attrs.character.name}</div>
+                <small class="text-mutex">颜色:{attrs.character.color.map(c =>
+                    <span style={"color:" + colorData[c].code}>{colorData[c].name}</span>
+                )}</small>
                 {attrs.showTags ? <div class="character-tags">{this.buildTags(attrs)}</div> : ""}
             </div>
         );
