@@ -121,7 +121,7 @@ export const chars: _Character<Color, typeof Tags>[] = [
   {
     "icon": "https://patchwiki.biligame.com/images/starengine/thumb/1/14/helmqopw0eryy94qatyostcpjyy4huf.png/100px-UT_Hero_RolePhoto_107.png",
     "name": "游戏大师:恋",
-    "color": [Color.WHITE],
+    "color": [Color.BLUE],
     "related": ["辅助", "功能辅", "一期", "2攻", "1防", "8血", "3CD"]
   },
   {
@@ -218,7 +218,7 @@ export const chars: _Character<Color, typeof Tags>[] = [
     "icon": "https://patchwiki.biligame.com/images/starengine/thumb/a/a9/m2oheea4r90byag4x6q0pd5bojx4ru4.png/100px-UT_Hero_RolePhoto_124.png",
     "name": "三神御主:照",
     "color": [Color.RED],
-    "related": ["辅助", "功能辅", "三期", "2攻", "1防", "9血", "3CD"]
+    "related": ["物理", "辅助", "功能辅", "三期", "2攻", "1防", "9血", "3CD"]
   },
   {
     "icon": "https://patchwiki.biligame.com/images/starengine/thumb/6/6b/g4lr2ypqj5jkbvzu7yjwd4w2qhfuh5i.png/100px-UT_Hero_RolePhoto_125.png",
