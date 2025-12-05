@@ -36,7 +36,7 @@ export class FilterSelectorPanel<T> implements ClassComponent<FilterSelectorPane
                         (<button class="btn btn-sm btn-outline-danger" onclick={() => ondelete!()}>删除</button>)
                         : ""
                 }
-                <button class="btn btn-sm btn-outline-secondary" onclick={() => this.reverse.emit()}>
+                <button class="btn btn-sm btn-outline-secondary" onclick={() => {this.reverse.emit();saveGlobals();}}>
                     反选
                 </button>
             </div>

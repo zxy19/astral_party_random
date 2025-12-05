@@ -31,6 +31,9 @@ export class ListedMultiSelector<T> implements ClassComponent<SelectorAttr<T>> {
             this.valueConverter = vn.attrs.valueConverter;
         this.updateKeys(vn.attrs)
     }
+    onbeforeupdate(vn: Vnode<SelectorAttr<T>>){
+        this.updateKeys(vn.attrs);
+    }
     updateKeys(attrs: SelectorAttr<T>) {
         Object.keys(this.tValue).forEach(t => delete this.tValue[t]);
         Object.keys(attrs.options).forEach(t => this.tValue[t] = false);

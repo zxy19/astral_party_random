@@ -5,6 +5,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { HomePage } from './pages/HomePage';
 import { ResultPage } from './pages/ResultPage';
 import { initGlobals, loadPlan } from './helper/store';
+import { loadDefaultPresets } from './preset';
 
 // 定义路由
 const routes = {
@@ -15,4 +16,5 @@ const routes = {
 initGlobals();
 m.route(document.getElementById('app')!, '/', routes);
 loadPlan();
+loadDefaultPresets();
 m.redraw();
