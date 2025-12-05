@@ -20,6 +20,7 @@ export function initGlobals() {
         showAvailable: false,
         showBanned: true,
         showDescription: true,
+        showAvailableOrBannedByCount: false,
         large: false,
         slim: true
     };

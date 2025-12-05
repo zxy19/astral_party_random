@@ -94,13 +94,15 @@ export class PlanRenderer {
             });
             layout.stepY(20);
         }
-        if (this.settings.showAvailable) {
+        const showAvailable = this.settings.showAvailable || (this.settings.showAvailableOrBannedByCount && availableChars.length < unavailableChars.length);
+        const showBanned = this.settings.showBanned || (this.settings.showAvailableOrBannedByCount && unavailableChars.length < availableChars.length);
+        if (showAvailable) {
             this.renderer.fillText("可用角色:", 20, layout.getY(), '#28a745', 'bold 24px Arial');
             layout.stepY(10);
             await this.drawCharacterList(availableChars, 20, layout.getY(), layout);
             layout.stepY(20);
         }
-        if (this.settings.showBanned) {
+        if (showBanned) {
             this.renderer.fillText("不可用角色:", 20, layout.getY(), '#dc3545', 'bold 24px Arial');
             layout.stepY(10);
             await this.drawCharacterList(unavailableChars, 20, layout.getY(), layout);
@@ -109,7 +111,6 @@ export class PlanRenderer {
         layout.stepY(-34);
         this.switchBackgroundColor(colorHighlight, layout);
         layout.stepY(5);
-
     }
 
     private loadImage(src: string): Promise<HTMLImageElement> {

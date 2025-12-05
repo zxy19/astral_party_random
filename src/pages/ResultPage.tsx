@@ -17,6 +17,7 @@ export class ResultPage implements ClassComponent {
   private static GRAPH_SETTING_OPT = {
     showAvailable: "显示可用角色",
     showBanned: "显示禁用角色",
+    showAvailableOrBannedByCount: "显示可用或禁用角色中数量较少的",
     showDescription: "显示描述",
     large: "更大的角色",
     slim: "更窄的图片输出"

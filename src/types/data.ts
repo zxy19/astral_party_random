@@ -13,6 +13,7 @@ export enum TagState {
 export type GraphSettings = {
     showAvailable: boolean,
     showBanned: boolean,
+    showAvailableOrBannedByCount: boolean,
     showDescription: boolean,
     large: boolean,
     slim: boolean
