@@ -1,9 +1,8 @@
 import { chars, Color, difficultyLabels, mapLabels, Tags } from "../data";
 import { Plan } from "../data/Plan";
-import { Difficulty, GenerateCharConfig, GenerateConfig, Map } from "../types/game";
+import { Difficulty, GenerateCharConfig, GenerateConfig, Map, Preset } from "../types/game";
 import { generatePlan } from "./planGenerator";
-import { getStoredGenerateConfig, getStoredGraphSetting, getStoredPlan, storeGenerateConfig, storeGraphSetting, storePlan } from "./settings";
-import { v4 as uuidv4 } from "uuid"
+import { getStoredGenerateConfig, getStoredGraphSetting, getStoredSavedConfigs, storeGenerateConfig, storeGraphSetting, storeSavedConfig } from "./settings";
 import { Base64 } from "js-base64";
 import m from 'mithril';
 import { GraphSettings } from "../types/data";
@@ -11,6 +10,7 @@ import { GraphSettings } from "../types/data";
 export const GLOBAL: {
     currentPlan?: Plan,
     currentConfig: GenerateConfig,
+    savedPresets: Preset[],
     graphSetting: GraphSettings
 } = <any>{}
 
@@ -23,6 +23,7 @@ export function initGlobals() {
         large: false,
         slim: true
     };
+    GLOBAL.savedPresets = getStoredSavedConfigs() || [];
 }
 export function loadPlan() {
     const planParam = m.route.param('plan');
@@ -40,6 +41,7 @@ export function loadPlan() {
 export function saveGlobals() {
     storeGenerateConfig(GLOBAL.currentConfig);
     storeGraphSetting(GLOBAL.graphSetting);
+    storeSavedConfig(GLOBAL.savedPresets);
 }
 
 function getDefaultConfig(): GenerateConfig {
@@ -111,4 +113,13 @@ export function generatePlanFromGlobalConfigAndShow() {
             console.error("Failed to serialize and encode plan", e);
         }
     }
+}
+
+export function savePreset(config: Preset){
+    GLOBAL.savedPresets.push(config);
+    saveGlobals();
+}
+export function removeSavedPreset(idx:number){
+    GLOBAL.savedPresets.splice(idx, 1);
+    saveGlobals();
 }

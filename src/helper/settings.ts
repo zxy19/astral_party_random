@@ -3,63 +3,20 @@ import { CharPlan } from "../data/CharPlan";
 import { Filter } from "../data/Filter";
 import { Plan } from "../data/Plan";
 import { GraphSettings } from "../types/data";
-import { FilterConfig, GenerateCharConfig, GenerateConfig } from "../types/game";
+import { FilterConfig, GenerateCharConfig, GenerateConfig, Preset } from "../types/game";
+import { deserializeGenerateConfig, serializeGenerateConfig } from "./configHelper";
 import { GLOBAL } from "./store";
 
 export function storeGenerateConfig(config: GenerateConfig) {
-    const toStore: any = {};
-    toStore.map = config.map;
-    toStore.difficulty = config.difficulty;
-    toStore.groups = config.groups.map(group => storeCharConfig(group))
-    toStore.globalConfig = storeCharConfig(config.globalConfig);
-    localStorage.setItem("generateConfig", JSON.stringify(toStore));
+    localStorage.setItem("generateConfig", JSON.stringify(serializeGenerateConfig(config)));
 }
 
 export function getStoredGenerateConfig(): GenerateConfig | null {
     const storedTxt = localStorage.getItem("generateConfig");
     if (!storedTxt) return null;
     const stored = <any>JSON.parse(storedTxt);
-    return {
-        map: stored.map,
-        difficulty: stored.difficulty,
-        globalConfig: {
-            charFilters: stored.globalConfig.charFilters.map((t: any) => recoverFilter(t, tt => chars.find(c => c.name === tt))),
-            tagFilters: stored.globalConfig.tagFilters.map((t: any) => recoverFilter(t, tt => tt)),
-            colorFilter: recoverFilter(stored.globalConfig.colorFilter, tt => <Color>parseInt(tt))
-        },
-        groups: stored.groups.map((g: any) => {
-            return {
-                charFilters: g.charFilters.map((t: any) => recoverFilter(t, tt => chars.find(c => c.name === tt))),
-                tagFilters: g.tagFilters.map((t: any) => recoverFilter(t, tt => tt)),
-                colorFilter: recoverFilter(g.colorFilter, tt => <Color>parseInt(tt))
-            };
-        })
-    }
+    return deserializeGenerateConfig(stored);
 }
-function storeCharConfig(group: GenerateCharConfig) {
-    const toStoreGrp: any = {};
-    toStoreGrp.tagFilters = group.tagFilters.map(t => storeFilter(t, tt => tt));
-    toStoreGrp.charFilters = group.charFilters.map(t => storeFilter(t, tt => tt.name));
-    toStoreGrp.colorFilter = storeFilter(group.colorFilter, tt => tt.valueOf() + "");
-    return toStoreGrp;
-}
-
-function storeFilter<T>(filter: FilterConfig<T>, nameConverter: (data: T) => string) {
-    return {
-        whitelist: filter.whitelist,
-        values: filter.values.map(nameConverter),
-        select: filter.select
-    }
-}
-function recoverFilter<T>(stored: any, nameLookUp: (name: string) => T): FilterConfig<T> {
-    return {
-        whitelist: stored.whitelist,
-        values: stored.values.map(nameLookUp),
-        select: stored.select
-    }
-}
-
-
 export function storePlan(plan: Plan) {
     localStorage.setItem("plan", plan.serialize());
 }
@@ -78,7 +35,24 @@ export function getStoredGraphSetting(): GraphSettings | null {
     return JSON.parse(d);
 }
 
-export function clearAllStoredData(){
+export function storeSavedConfig(configs: Preset[]) {
+    localStorage.setItem("savedConfigs", JSON.stringify(
+        configs.map(c => ({
+            name: c.name,
+            config: serializeGenerateConfig(c.config)
+        }))
+    ));
+}
+export function getStoredSavedConfigs(): Preset[] {
+    const d = localStorage.getItem("savedConfigs");
+    if (!d) return [];
+    return JSON.parse(d).map((d: any) => ({
+        name: d.name,
+        config: deserializeGenerateConfig(d.config)
+    }));
+}
+
+export function clearAllStoredData() {
     localStorage.removeItem("plan");
     localStorage.removeItem("generateConfig");
     location.reload();

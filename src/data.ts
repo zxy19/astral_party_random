@@ -1,4 +1,6 @@
+import { deserializeGenerateConfig } from "./helper/configHelper";
 import { _Character } from "./types/data";
+import { Preset } from "./types/game";
 
 // 颜色数据
 export enum Color {
@@ -251,6 +253,21 @@ export const chars: _Character<Color, typeof Tags>[] = [
     "related": ["物理", "联动", "1攻", "0防", "8血", "2CD"]
   }
 ];
+
+export const defaultPresets: Preset[] = [
+  {
+    name: "禁2色",
+    config: deserializeGenerateConfig({ "map": { "1": true, "2": true, "3": true, "4": true, "5": true, "6": true }, "difficulty": { "1": false, "2": false, "3": false, "4": true }, "groups": [], "globalConfig": { "tagFilters": [], "charFilters": [], "colorFilter": { "whitelist": false, "values": ["4", "2", "3", "0", "5", "1"], "select": 2 } } })
+  },
+  {
+    name: "辅助输出分组",
+    config: deserializeGenerateConfig({ "map": { "1": true, "2": true, "3": true, "4": true, "5": true, "6": true }, "difficulty": { "1": false, "2": false, "3": false, "4": true }, "groups": [{ "tagFilters": [{ "whitelist": true, "values": ["魔法", "物理"], "select": "2" }], "charFilters": [], "colorFilter": { "whitelist": false, "values": ["4", "2", "3", "0", "5", "1"], "select": 0 } }, { "tagFilters": [{ "whitelist": true, "values": ["辅助"], "select": "1" }], "charFilters": [], "colorFilter": { "whitelist": false, "values": ["4", "2", "3", "0", "5", "1"], "select": 0 } }], "globalConfig": { "tagFilters": [], "charFilters": [], "colorFilter": { "whitelist": false, "values": ["5", "4", "0", "2", "1", "3"], "select": "2" } } })
+  },
+  {
+    name: "随机4人",
+    config: deserializeGenerateConfig({ "map": { "1": true, "2": true, "3": true, "4": true, "5": true, "6": true }, "difficulty": { "1": false, "2": false, "3": false, "4": true }, "groups": [{ "tagFilters": [], "charFilters": [], "colorFilter": { "whitelist": false, "values": [], "select": 0 } }, { "tagFilters": [], "charFilters": [], "colorFilter": { "whitelist": false, "values": [], "select": 0 } }, { "tagFilters": [], "charFilters": [], "colorFilter": { "whitelist": false, "values": [], "select": 0 } }, { "tagFilters": [], "charFilters": [], "colorFilter": { "whitelist": false, "values": [], "select": 0 } }], "globalConfig": { "tagFilters": [], "charFilters": [{ "whitelist": true, "values": ["商业之主:帕露南", "古怪侦探:芬妮", "社恐修女:阿兰娜", "暗影忍者:小町", "社员叔叔:派德曼", "猩红辣妹:帕帕拉", "游戏大师:恋", "看板娘:米米", "垃圾箱:Z3000", "肉弹战车:潘大猛", "史莱姆:璐璐", "旗袍娘:枫", "命运少女:蓝海晴", "太刀使:美咲", "绿洲女王:娜蒂斯", "家政机器人:茉莉", "暗区少主:阿尔", "午夜闪光:星魅琉华", "网络魅影:南希露", "新人调查员:凛", "机械超人:梅加斯", "风水师:姬梦朝", "三神御主:照", "枪匠:摩西", "超天酱:超绝最可爱天使酱", "糖糖:主播女孩", "吉尔:吉尔·斯汀雷", "多萝西:多萝西·海兹"], "select": "1" }], "colorFilter": { "whitelist": false, "values": [], "select": "0" } } })
+  }
+]
 
 // 存储键
 export const STORAGE_KEY = "mapRoleSelectionSettings";

@@ -28,3 +28,7 @@ export interface RandomizedFilterConfig<T> {
     whitelist: boolean
     picked: T[]
 }
+export type Preset = {
+    name: string;
+    config: GenerateConfig;
+}

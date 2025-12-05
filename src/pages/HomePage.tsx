@@ -1,8 +1,8 @@
 import m, { ClassComponent, Vnode } from 'mithril';
 import { Card } from '../components/base/Card';
 import { Selector } from '../components/base/Selector';
-import { difficultyLabels, mapLabels, chars } from '../data';
-import { GLOBAL, saveGlobals, addCharConfig } from '../helper/store';
+import { difficultyLabels, mapLabels, chars, defaultPresets } from '../data';
+import { GLOBAL, saveGlobals, addCharConfig, savePreset } from '../helper/store';
 import { MultiSelector } from '../components/base/MultiSelector';
 import { Button } from '../components/base/Button';
 import { Accordion } from '../components/base/Accordion';
@@ -13,6 +13,8 @@ import { storeGenerateConfig, getStoredGenerateConfig, clearAllStoredData } from
 import { generatePlanFromGlobalConfigAndShow } from '../helper/store';
 import { ResultPage } from './ResultPage';
 import { CharacterPanel } from '../components/char/CharacterPanel';
+import { PresetList } from '../components/config/PresetList';
+import { deserializeGenerateConfig, serializeGenerateConfig } from '../helper/configHelper';
 
 export class HomePage implements ClassComponent {
 
@@ -57,6 +59,8 @@ export class HomePage implements ClassComponent {
                   <Button variant="warning" onclick={() => this.importConfig()}>导入配置</Button>
                   <span> </span>
                   <Button variant="danger" onclick={() => this.clearConfig()}>清空配置</Button>
+                  <span> </span>
+                  <Button variant="secondary" onclick={() => this.saveCurrentPreset()}>保存预设</Button>
                 </div>
               </div>
             </Card>
@@ -65,6 +69,16 @@ export class HomePage implements ClassComponent {
         <Accordion titleGetter={this.getTitle}>
           {this.makeConfigurationList()}
         </Accordion>
+
+        <div class="row mt-4">
+          <div className='col-12'>
+            <Card title="预设">
+              <PresetList presets={GLOBAL.savedPresets} canDelete={true} />
+              {GLOBAL.savedPresets.length > 0 ? <hr /> : ""}
+              <PresetList presets={defaultPresets} canDelete={false} />
+            </Card>
+          </div>
+        </div>
         <div class="row mt-4">
           <div className='col-12'>
             <Card title="全部角色" collapsible={true}>
@@ -78,7 +92,10 @@ export class HomePage implements ClassComponent {
 
   // 导出配置到文件
   private exportConfig() {
-    const configData = JSON.stringify(GLOBAL.currentConfig, null, 2);
+    const configData = JSON.stringify({
+      _ver:1,
+      data: serializeGenerateConfig(GLOBAL.currentConfig)
+    });
     const blob = new Blob([configData], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
 
@@ -109,7 +126,11 @@ export class HomePage implements ClassComponent {
       reader.onload = (e) => {
         try {
           const configData = JSON.parse(e.target?.result as string);
-          GLOBAL.currentConfig = configData;
+          if(configData._ver === undefined){
+            GLOBAL.currentConfig = configData;
+          }else{
+            GLOBAL.currentConfig = deserializeGenerateConfig(configData.data);
+          }
           saveGlobals();
           m.redraw();
         } catch (error) {
@@ -125,6 +146,13 @@ export class HomePage implements ClassComponent {
   private clearConfig() {
     if (confirm("你确定要清空当前页面上的配置吗？"))
       clearAllStoredData();
+  }
+  private saveCurrentPreset() {
+    const name = prompt("请输入预设名称");
+    if (!name)
+      return;
+    savePreset({name, config: GLOBAL.currentConfig});
+    m.redraw();
   }
   makeConfigurationList() {
     const allConfigs: any[] = [
