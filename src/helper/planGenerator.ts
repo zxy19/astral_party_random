@@ -1,26 +1,35 @@
 import { CharPlan } from "../data/CharPlan";
 import { FilterConfig, GenerateCharConfig, GenerateConfig, RandomizedFilterConfig } from "../types/game";
 import { Filter } from "../data/Filter";
-import { difficultyLabels, mapLabels } from "../data";
+import { chars, difficultyLabels, mapLabels } from "../data";
 import { Plan } from "../data/Plan";
 import { FILTER_SERIALIZER_CHARS, FILTER_SERIALIZER_COLOR, FILTER_SERIALIZER_TAG } from "./serializerManager";
+import { GLOBAL } from "./store";
 
 export function generatePlan(config: GenerateConfig): Plan {
     const isSingle = config.groups.length == 0;
     const groups = (!isSingle) ? config.groups : [config.globalConfig];
+    const generatedGlobalFilters: Filter<any>[] = [];
+    if (config.settings.calculateGlobalFilterOnceOnly) {
+        addAllFiltersFor(config.globalConfig, generatedGlobalFilters);
+    }
     return new Plan(
         randomFromListWithFilter(<any[]>Object.keys(mapLabels), config.map),
         randomFromListWithFilter(<any[]>Object.keys(difficultyLabels), config.difficulty),
         groups.map(group => {
-            return generateGroupPlan(group, config.globalConfig, isSingle);
+            return generateGroupPlan(group, config.globalConfig, generatedGlobalFilters, isSingle);
         })
     );
 }
-function generateGroupPlan(group: GenerateCharConfig, globalConfig: GenerateCharConfig, isSingle: boolean): CharPlan {
+function generateGroupPlan(group: GenerateCharConfig, globalConfig: GenerateCharConfig, generatedGlobalFilters: Filter<any>[], isSingle: boolean): CharPlan {
     const filters: Filter<any>[] = [];
     addAllFiltersFor(group, filters);
-    if (!isSingle)
-        addAllFiltersFor(globalConfig, filters);
+    if (!isSingle) {
+        if (generatedGlobalFilters.length > 0)
+            generatedGlobalFilters.forEach(filter => filters.push(filter));
+        else
+            addAllFiltersFor(globalConfig, filters);
+    }
     return new CharPlan(filters);
 }
 function addAllFiltersFor(group: GenerateCharConfig, filters: Filter<any>[]) {
@@ -52,4 +61,23 @@ function randomFromList<T>(list: T[], count: number): T[] {
 }
 function randomFromListWithFilter<T extends keyof any>(list: T[], filter: Record<T, boolean>) {
     return list.filter(item => filter[item]).sort(() => Math.random() - 0.5)[0];
+}
+export function checkPlanIsValid(plan: Plan): boolean {
+    const canSelectChars: Record<string, boolean> = {};
+    let minSelectable = chars.length;
+    plan.getGroups().forEach(group => {
+        let grpSelectable = 0;
+        chars.forEach(char => {
+            if (group.isCharacterAllowed(char)) {
+                canSelectChars[char.name] = true;
+                grpSelectable++;
+            }
+        });
+        minSelectable = Math.min(minSelectable, grpSelectable);
+    });
+    if (minSelectable == 0)
+        return false;
+    if (Object.keys(canSelectChars).length < 4)
+        return false;
+    return true;
 }

@@ -1,6 +1,6 @@
 import { Color, difficultyLabels, mapLabels, Tags } from "../data";
 import { CharPlan } from "../data/CharPlan";
-import { _Character } from "./data";
+import { _Character, GenerateSettings } from "./data";
 
 export type Character = _Character<Color, typeof Tags>;
 export type Tag = keyof typeof Tags;
@@ -10,8 +10,9 @@ export type Difficulty = keyof typeof difficultyLabels;
 export type GenerateConfig = {
     map: Record<keyof typeof mapLabels, boolean>;
     difficulty: Record<keyof typeof difficultyLabels, boolean>;
-    globalConfig: GenerateCharConfig,
+    globalConfig: GenerateCharConfig;
     groups: GenerateCharConfig[];
+    settings: GenerateSettings
 }
 export type GenerateCharConfig = {
     tagFilters: FilterConfig<Tag>[]

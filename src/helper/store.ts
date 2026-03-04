@@ -1,18 +1,21 @@
 import { chars, Color, difficultyLabels, mapLabels, Tags } from "../data";
 import { Plan } from "../data/Plan";
 import { Difficulty, GenerateCharConfig, GenerateConfig, Map, Preset } from "../types/game";
-import { generatePlan } from "./planGenerator";
-import { getStoredGenerateConfig, getStoredGraphSetting, getStoredSavedConfigs, storeGenerateConfig, storeGraphSetting, storeSavedConfig } from "./settings";
+import { checkPlanIsValid, generatePlan } from "./planGenerator";
+import { getStoredGenerateConfig, getStoredGlobalSetting, getStoredGraphSetting, getStoredSavedConfigs, storeGenerateConfig, storeGlobalSetting, storeGraphSetting, storeSavedConfig } from "./settings";
 import { Base64 } from "js-base64";
 import m from 'mithril';
-import { GraphSettings } from "../types/data";
+import { GenerateSettings, GraphSettings } from "../types/data";
 
 export const GLOBAL: {
     currentPlan?: Plan,
     currentConfig: GenerateConfig,
     savedPresets: Preset[],
-    graphSetting: GraphSettings
-} = <any>{}
+    graphSetting: GraphSettings,
+    tries: number
+} = <any>{
+    tries: -1
+}
 
 export function initGlobals() {
     GLOBAL.currentConfig = getStoredGenerateConfig() || getDefaultConfig();
@@ -25,6 +28,12 @@ export function initGlobals() {
         slim: true
     };
     GLOBAL.savedPresets = getStoredSavedConfigs() || [];
+    if (!GLOBAL.currentConfig.settings) {
+        GLOBAL.currentConfig.settings = {
+            calculateGlobalFilterOnceOnly: false,
+            ensureAvailable: true
+        }
+    }
 }
 export function loadPlan() {
     const planParam = m.route.param('plan');
@@ -55,7 +64,11 @@ function getDefaultConfig(): GenerateConfig {
         map,
         difficulty,
         globalConfig: getNewGenerateCharConfig(2),
-        groups: []
+        groups: [],
+        settings: {
+            calculateGlobalFilterOnceOnly: false,
+            ensureAvailable: true
+        }
     }
 }
 function getNewGenerateCharConfig(dColor = 0): GenerateCharConfig {
@@ -103,24 +116,45 @@ export function removePanel(idx: number, type: "tag" | "char", panelIdx: number)
 }
 
 
-export function generatePlanFromGlobalConfigAndShow() {
+export function generatePlanFromGlobalConfigAndShow(tries: number = 0) {
+    if (tries != 0 && GLOBAL.tries == -1) {
+        return;
+    }
+    if (tries > 2000) {
+        alert("当前配置无法找到可以进行游戏的配置（已尝试2000次）");
+        m.route.set("/", {}, { replace: true });
+        return;
+    }
     GLOBAL.currentPlan = generatePlan(GLOBAL.currentConfig);
+    if (GLOBAL.currentConfig.settings.ensureAvailable) {
+        if (!checkPlanIsValid(GLOBAL.currentPlan)) {
+            setTimeout(() => {
+                generatePlanFromGlobalConfigAndShow((tries || 0) + 1);
+            }, 1);
+            GLOBAL.tries = tries;
+            m.redraw();
+            if (tries == 0) {
+                m.route.set("/trying");
+            }
+            return;
+        }
+    }
     if (GLOBAL.currentPlan) {
         try {
             const serializedPlan = GLOBAL.currentPlan.serialize();
             const encodedPlan = Base64.encode(serializedPlan);
-            m.route.set(`/result/${encodedPlan}`);
+            m.route.set(`/result/${encodedPlan}`, {}, { replace: tries != 0 });
         } catch (e) {
             console.error("Failed to serialize and encode plan", e);
         }
     }
 }
 
-export function savePreset(config: Preset){
+export function savePreset(config: Preset) {
     GLOBAL.savedPresets.push(config);
     saveGlobals();
 }
-export function removeSavedPreset(idx:number){
+export function removeSavedPreset(idx: number) {
     GLOBAL.savedPresets.splice(idx, 1);
     saveGlobals();
 }

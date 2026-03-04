@@ -7,6 +7,7 @@ export function serializeGenerateConfig(config: GenerateConfig): Object {
     toStore.difficulty = saveObjSelect(config.difficulty, <any>Object.keys(difficultyLabels));
     toStore.groups = config.groups.map(group => storeCharConfig(group))
     toStore.globalConfig = storeCharConfig(config.globalConfig);
+    toStore.settings = config.settings;
     return toStore;
 }
 export function deserializeGenerateConfig(stored: any): GenerateConfig {
@@ -24,7 +25,11 @@ export function deserializeGenerateConfig(stored: any): GenerateConfig {
                 tagFilters: g.tagFilters.map((t: any) => recoverFilter(t, tt => tt, Object.keys(Tags))),
                 colorFilter: recoverFilter(g.colorFilter, tt => <Color>parseInt(tt), <any>Object.keys(colorData))
             };
-        })
+        }),
+        settings: stored.settings || {
+            calculateGlobalFilterOnceOnly: false,
+            ensureAvailable: true
+        },
     }
 }
 export function copyConfig(config: GenerateConfig) {

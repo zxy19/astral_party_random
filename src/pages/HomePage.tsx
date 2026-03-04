@@ -15,9 +15,13 @@ import { ResultPage } from './ResultPage';
 import { CharacterPanel } from '../components/char/CharacterPanel';
 import { PresetList } from '../components/config/PresetList';
 import { deserializeGenerateConfig, serializeGenerateConfig } from '../helper/configHelper';
+import { GenerateSettings } from '../types/data';
 
 export class HomePage implements ClassComponent {
-
+  static GLOBAL_SETTING_OPT: Record<keyof GenerateSettings, string> = {
+    "calculateGlobalFilterOnceOnly": "仅计算一次全局过滤器",
+    "ensureAvailable": "确保有可用角色"
+  }
   view(_vnode: Vnode) {
     return [
       <div class="header">
@@ -65,6 +69,11 @@ export class HomePage implements ClassComponent {
               </div>
             </Card>
           </div>
+          <div className='col-12 mt-2'>
+            <Card>
+              <MultiSelector options={HomePage.GLOBAL_SETTING_OPT} value={GLOBAL.currentConfig.settings} onchange={saveGlobals} inline={true} />
+            </Card>
+          </div>
         </div>
         <Accordion titleGetter={this.getTitle}>
           {this.makeConfigurationList()}
@@ -93,7 +102,7 @@ export class HomePage implements ClassComponent {
   // 导出配置到文件
   private exportConfig() {
     const configData = JSON.stringify({
-      _ver:1,
+      _ver: 1,
       data: serializeGenerateConfig(GLOBAL.currentConfig)
     });
     const blob = new Blob([configData], { type: 'application/json' });
@@ -126,9 +135,9 @@ export class HomePage implements ClassComponent {
       reader.onload = (e) => {
         try {
           const configData = JSON.parse(e.target?.result as string);
-          if(configData._ver === undefined){
+          if (configData._ver === undefined) {
             GLOBAL.currentConfig = configData;
-          }else{
+          } else {
             GLOBAL.currentConfig = deserializeGenerateConfig(configData.data);
           }
           saveGlobals();
@@ -151,7 +160,7 @@ export class HomePage implements ClassComponent {
     const name = prompt("请输入预设名称");
     if (!name)
       return;
-    savePreset({name, config: GLOBAL.currentConfig});
+    savePreset({ name, config: GLOBAL.currentConfig });
     m.redraw();
   }
   makeConfigurationList() {

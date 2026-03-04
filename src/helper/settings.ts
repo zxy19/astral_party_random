@@ -2,7 +2,7 @@ import { chars, Color } from "../data";
 import { CharPlan } from "../data/CharPlan";
 import { Filter } from "../data/Filter";
 import { Plan } from "../data/Plan";
-import { GraphSettings } from "../types/data";
+import { GenerateSettings, GraphSettings } from "../types/data";
 import { FilterConfig, GenerateCharConfig, GenerateConfig, Preset } from "../types/game";
 import { deserializeGenerateConfig, serializeGenerateConfig } from "./configHelper";
 import { GLOBAL } from "./store";
@@ -56,4 +56,13 @@ export function clearAllStoredData() {
     localStorage.removeItem("plan");
     localStorage.removeItem("generateConfig");
     location.reload();
+}
+export function storeGlobalSetting(g: GenerateSettings) {
+    localStorage.setItem("globalSetting", JSON.stringify(g));
+}
+export function getStoredGlobalSetting(): GenerateSettings | null {
+    const d = localStorage.getItem("globalSetting");
+    if (!d) return null;
+    return JSON.parse(d);
+
 }

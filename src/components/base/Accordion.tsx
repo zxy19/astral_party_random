@@ -20,7 +20,7 @@ export class Accordion implements ClassComponent<AccordionAttrs> {
     }).filter(item => item !== null);
 
     return (
-      <div className="accordion mt-3" id={id}>
+      <div className="accordion" id={id}>
         {accordionItems}
       </div>
     );

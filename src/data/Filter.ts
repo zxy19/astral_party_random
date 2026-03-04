@@ -12,7 +12,9 @@ export class Filter<T> {
         this.serializer = serializer;
     }
     isValid(value: T): boolean {
-        return this.config.whitelist ? this.config.picked.includes(value) : !this.config.picked.includes(value);
+        return this.config.whitelist ?
+            this.config.picked.findIndex(t => t == value) != -1 :
+            this.config.picked.findIndex(t => t == value) == -1;
     }
     isCharValid(char: Character) {
         let value: T[] | T = this.valueGetter(char);

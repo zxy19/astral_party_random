@@ -27,7 +27,8 @@ export const mapLabels: Record<number, string> = {
   3: "魔法学院",
   4: "水乡古镇",
   5: "御魂庆典",
-  6: "星趴·梦想号"
+  6: "星趴·梦想号",
+  7: "园林中庭"
 };
 
 // 难度数据
@@ -60,6 +61,7 @@ export const Tags = {
   "一期": { type: TagClass.TIME },
   "二期": { type: TagClass.TIME },
   "三期": { type: TagClass.TIME },
+  "四期": { type: TagClass.TIME },
   "联动": { type: TagClass.TIME },
 
   "0攻": { type: TagClass.ATTACK },
@@ -229,10 +231,22 @@ export const chars: _Character<Color, typeof Tags>[] = [
     "related": ["物理", "三期", "1攻", "1防", "11血", "2CD"]
   },
   {
-    "icon": "https://i.mji.rip/2025/12/05/68dc410d0e1bbebee445d1609f3062f3.png",
+    "icon": "https://patchwiki.biligame.com/images/starengine/thumb/9/93/l7arbgzzlaix4y3e302iy1vmsuyjuxo.png/150px-UT_Hero_RolePhoto_126.png",
     "name": "沼之蛟龙:真梦梓",
     "color": [Color.BLUE],
-    "related": ["物理", "辅助", "功能辅", "2攻", "1防", "9血", "3CD"]
+    "related": ["物理", "辅助", "三期", "功能辅", "2攻", "1防", "9血", "3CD"]
+  },
+  {
+    "icon": "https://patchwiki.biligame.com/images/starengine/thumb/a/a6/snhz2i4i36naaz5i13ihuiunk00t7ev.png/150px-UT_Hero_RolePhoto_127.png",
+    "name": "毒苹果:邦妮",
+    "color": [Color.WHITE],
+    "related": ["物理", "辅助", "四期", "钱辅", "功能辅", "2攻", "1防", "9血", "3CD"]
+  },
+  {
+    "icon": "https://i.mji.rip/2026/02/05/79e638b142c85eea42367191cdd3e5d3.png",
+    "name": "小猎手:墨影",
+    "color": [Color.BLACK],
+    "related": ["物理", "2攻", "四期", "1防", "10血", "3CD"]
   },
   {
     "icon": "https://patchwiki.biligame.com/images/starengine/thumb/0/0a/aq1h2scidws8c9lekzpkcofkruyu4no.png/100px-UT_Hero_RolePhoto_301.png",

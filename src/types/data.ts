@@ -18,6 +18,10 @@ export type GraphSettings = {
     large: boolean,
     slim: boolean
 }
+export type GenerateSettings = {
+    calculateGlobalFilterOnceOnly: boolean,
+    ensureAvailable: boolean
+}
 export interface Stringify<T> {
     serialize(value: T): string;
     deserialize(value: string): T;
